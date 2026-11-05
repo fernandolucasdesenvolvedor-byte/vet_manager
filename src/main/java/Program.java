@@ -8,6 +8,9 @@ import javax.persistence.Persistence;
 import entities.Address;
 import entities.Animal;
 import entities.Client;
+import entities.Receptionist;
+import entities.Specialty;
+import entities.Veterinarian;
 
 public class Program {
 
@@ -27,6 +30,8 @@ public class Program {
 			System.out.println("");
 			System.out.println("1 - Cadastrar cliente.");
 			System.out.println("2 - Cadastrar animal.");
+			System.out.println("3 - Cadastrar funcionário.");
+			System.out.println("4 - Cadastrar especialidade.");
 			System.out.println("0 - Sair.");
 			System.out.println("");
 			
@@ -51,6 +56,7 @@ public class Program {
 					em.getTransaction().begin();;
 					
 					em.persist(client);
+					System.out.println("Cliente registrado com sucesso!");
 					
 					em.getTransaction().commit();;
 					
@@ -84,6 +90,7 @@ public class Program {
 							Client owner = em.find(Client.class, chooseOwner);
 							Animal animal = new Animal(nameAnimal, owner);
 							em.persist(animal);
+							System.out.println("Animal registrado com sucesso!");
 							break;
 						}else if(chooseOwner == 0){
 							break;
@@ -94,15 +101,94 @@ public class Program {
 						}
 					}
 					
+					em.getTransaction().commit();
+					
+					System.out.println();
+					break;
+					
+				case 3:
+					System.out.println();
+					System.out.println("Qual nome do funcionário?");
+					String nameEmployee = sc.nextLine();
+					System.out.println("Qual nome da rua?");
+					String streetEmployee = sc.nextLine();
+					System.out.println("Qual número da rua?");
+					String numberStreetEmployee = sc.nextLine();
+					
+					Address addressEmployee = new Address(streetEmployee,numberStreetEmployee);
+					
+					
+					while(true) {
+						
+						System.out.println("Que tipo de funcionário?");
+						System.out.println("");
+						System.out.println("1 - Veterinário");
+						System.out.println("2 - Recepcionista");
+						System.out.println("0 - Cancelar cadastro de funcionário");
+						System.out.println("");
+						
+						int chooseWorker = sc.nextInt();
+						sc.nextLine();
+						
+						switch(chooseWorker) {
+							case 1: {
+								System.out.println("");
+								System.out.println("Qual salário do funcionário?");
+								Double salaryEmployee = sc.nextDouble();
+								Veterinarian veterinarian = new Veterinarian(nameEmployee, salaryEmployee, addressEmployee);
+								em.getTransaction().begin();
+								em.persist(veterinarian);
+								em.getTransaction().commit();
+								break;
+							}
+							case 2: {
+								System.out.println("");
+								System.out.println("Qual salário do funcionário?");
+								Double salaryEmployee = sc.nextDouble();
+								Receptionist receptionist = new Receptionist(nameEmployee, salaryEmployee, addressEmployee);
+								em.getTransaction().begin();
+								em.persist(receptionist);
+								em.getTransaction().commit();
+								break;
+							}
+							case 0:
+								break;
+							default:
+								System.out.println("Opção Incorreta!");
+								break;
+						}
+						
+						if(chooseWorker == 1 || chooseWorker == 2 || chooseWorker == 0) {
+							break;
+						}
+					}
 					
 					
 					
+					
+					break;
+					
+				case 4:
+					System.out.println();
+					System.out.println("Qual nome da especialidade?");
+					String nameSpecialty = sc.nextLine();
+					
+					em.getTransaction().begin();
+					
+					List<Specialty> specialtys = em.createQuery("SELECT s FROM Specialty s", Specialty.class).getResultList();
+					
+					
+					if(!specialtys.stream().anyMatch(s -> s.getSpecialty().equals(nameSpecialty))) {
+						em.persist(new Specialty(nameSpecialty));
+						System.out.println("Especialidade cadastrada!");
+						System.out.println();
+					}else {
+						System.out.println();
+						System.out.println("Já Existe essa especialidade!");
+					}
 					
 					em.getTransaction().commit();
 					
-					
-					
-					System.out.println();
 					break;
 					
 				case 0:
