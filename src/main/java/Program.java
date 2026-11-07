@@ -1,5 +1,6 @@
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -32,6 +33,7 @@ public class Program {
 			System.out.println("2 - Cadastrar animal.");
 			System.out.println("3 - Cadastrar funcionário.");
 			System.out.println("4 - Cadastrar especialidade.");
+			System.out.println("5 - Vincular especialidade ao veterinário.");
 			System.out.println("0 - Sair.");
 			System.out.println("");
 			
@@ -168,7 +170,7 @@ public class Program {
 					
 					break;
 					
-				case 4:
+				case 4:{
 					System.out.println();
 					System.out.println("Qual nome da especialidade?");
 					String nameSpecialty = sc.nextLine();
@@ -186,6 +188,108 @@ public class Program {
 						System.out.println();
 						System.out.println("Já Existe essa especialidade!");
 					}
+					
+					em.getTransaction().commit();
+					
+					break;
+				}
+					
+				case 5:
+					System.out.println();
+					Specialty specialty = null;
+					Veterinarian veterinarian = null;
+					
+					em.getTransaction().begin();
+					
+					List<Specialty> specialtys = em.createQuery("SELECT s FROM Specialty s",Specialty.class).getResultList();
+					List<Long> specialtysIds = specialtys.stream().map(s -> s.getId()).collect(Collectors.toList());
+					List<Veterinarian> veterinarians = em.createQuery("SELECT v FROM Veterinarian v",Veterinarian.class).getResultList();
+					
+					em.getTransaction().commit();
+					
+					if(specialtys.isEmpty()) {
+						System.out.println("Não tem especialidades atualmente.");
+						break;
+					}else if(veterinarians.isEmpty()) {
+						System.out.println("Não tem veterinários atualmente.");
+						break;
+					}
+					
+					
+					while(true) {
+						System.out.println("Qual especialidade vai ser vinculada?");
+						System.out.println();
+						specialtys.forEach(System.out::println);
+						System.out.println("0 - Cancelar a vinculação.");
+						
+						Long chooseSpecialty = sc.nextLong();
+						
+						if(chooseSpecialty == 0L){
+							System.out.println();
+							break;
+						}else if(!specialtysIds.contains(chooseSpecialty)) {
+							System.out.println("Opção incorreta!");
+							System.out.println("Passe uma opção válida!");
+							System.out.println();
+						}else {
+							em.getTransaction().begin();
+							
+							specialty = em.find(Specialty.class, chooseSpecialty);
+							
+							em.getTransaction().commit();
+							System.out.println();
+							break;
+						}
+					}
+					
+					if(specialty == null) {
+						break;
+					}
+					
+					Specialty specialtyChoose = specialty;
+					List<Veterinarian> veterinariansWithoutSpecialty = veterinarians.stream().filter(v -> !specialtyChoose.getVeterinarians().contains(v)).collect(Collectors.toList());
+					List<Long> veterinariansWithoutSpecialtyIds = veterinariansWithoutSpecialty.stream().map(s -> s.getId()).collect(Collectors.toList());
+					
+					//////
+					
+					while(true) {
+						System.out.println("Para qual veterinário essa especialidade vai ser vinculada?");
+						System.out.println();
+						veterinariansWithoutSpecialty.forEach(System.out::println);
+						System.out.println("0 - Cancelar a vinculação.");
+						
+						Long chooseVeterinarian = sc.nextLong();
+						
+						if(chooseVeterinarian == 0L){
+							System.out.println();
+							break;
+						}else if(!veterinariansWithoutSpecialtyIds.contains(chooseVeterinarian)) {
+							System.out.println("Opção incorreta!");
+							System.out.println("Passe uma opção válida!");
+							System.out.println();
+						}else {
+							em.getTransaction().begin();
+							
+							veterinarian = em.find(Veterinarian.class, chooseVeterinarian);
+							specialtyChoose.getVeterinarians().add(veterinarian);
+							
+							em.getTransaction().commit();
+							System.out.println();
+							break;
+						}
+					}
+					
+					if(veterinarian == null) {
+						break;
+					}
+					
+					//////
+					
+					veterinarian.getSpecialtys().add(specialtyChoose);
+					
+					em.getTransaction().begin();
+					
+					em.merge(veterinarian);
 					
 					em.getTransaction().commit();
 					

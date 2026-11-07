@@ -26,5 +26,11 @@ public class Veterinarian extends Employee{
 	public Veterinarian(String name, Double salary, Address address) {
 		super(name,salary,address);
 	}
+
+	public Set<Specialty> getSpecialtys() {
+		return specialtys;
+	}
+	
+	
 	
 }

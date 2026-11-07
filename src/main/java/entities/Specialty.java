@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "specialtys")
-public class Specialty {
+public class Specialty{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,6 +46,10 @@ public class Specialty {
 		this.specialty = specialty;
 	}
 	
+	public Set<Veterinarian> getVeterinarians() {
+		return veterinarians;
+	}
+
 	@Override
 	public String toString() {
 		return id+" - "+specialty;
