@@ -34,6 +34,7 @@ public class Program {
 			System.out.println("3 - Cadastrar funcionário.");
 			System.out.println("4 - Cadastrar especialidade.");
 			System.out.println("5 - Vincular especialidade ao veterinário.");
+			System.out.println("6 - Agendar consulta.");
 			System.out.println("0 - Sair.");
 			System.out.println("");
 			
@@ -43,7 +44,7 @@ public class Program {
 			
 			switch(choose) {
 			
-				case 1:
+				case 1:{
 					System.out.println();
 					System.out.println("Qual nome do cliente?");
 					String nameClient = sc.nextLine();
@@ -64,8 +65,9 @@ public class Program {
 					
 					System.out.println();
 					break;
+				}
 					
-				case 2:
+				case 2:{
 					System.out.println();
 					System.out.println("Qual nome do animal?");
 					String nameAnimal = sc.nextLine();
@@ -107,8 +109,9 @@ public class Program {
 					
 					System.out.println();
 					break;
+				}
 					
-				case 3:
+				case 3:{
 					System.out.println();
 					System.out.println("Qual nome do funcionário?");
 					String nameEmployee = sc.nextLine();
@@ -169,6 +172,7 @@ public class Program {
 					
 					
 					break;
+				}
 					
 				case 4:{
 					System.out.println();
@@ -194,7 +198,7 @@ public class Program {
 					break;
 				}
 					
-				case 5:
+				case 5:{
 					System.out.println();
 					Specialty specialty = null;
 					Veterinarian veterinarian = null;
@@ -250,6 +254,12 @@ public class Program {
 					List<Veterinarian> veterinariansWithoutSpecialty = veterinarians.stream().filter(v -> !specialtyChoose.getVeterinarians().contains(v)).collect(Collectors.toList());
 					List<Long> veterinariansWithoutSpecialtyIds = veterinariansWithoutSpecialty.stream().map(s -> s.getId()).collect(Collectors.toList());
 					
+					if(veterinariansWithoutSpecialty.isEmpty()) {
+						System.out.println("Não tem veterinários disponíveis para vincular essa especialidade atualmente.");
+						System.out.println();
+						break;
+					}
+					
 					//////
 					
 					while(true) {
@@ -294,6 +304,152 @@ public class Program {
 					em.getTransaction().commit();
 					
 					break;
+				}
+					
+				case 6:{
+					System.out.println();
+					
+					em.getTransaction().begin();
+					
+					List<Client> clients = em.createQuery("SELECT c FROM Client c", Client.class).getResultList();
+					List<Long> clientsId = clients.stream().map(c -> c.getId()).collect(Collectors.toList());
+					List<Veterinarian> veterinarians = em.createQuery("SELECT v FROM Veterinarian v", Veterinarian.class).getResultList();
+					List<Long> veterinariansId = veterinarians.stream().map(v -> v.getId()).collect(Collectors.toList());;
+					
+					Long chooseClient = null;
+					Long chooseAnimal = null;
+					Long chooseVeterinarian = null;
+					
+					em.getTransaction().commit();
+					
+					if(clients.isEmpty()) {
+						System.out.println("Não tem clientes atualmente.");
+						break;
+					}else if(veterinarians.isEmpty()) {
+						System.out.println("Não tem veterinários atualmente.");
+						break;
+					}
+					
+					
+					///////
+					
+					while(true) {
+						System.out.println("Qual cliente vai fazer o agendamento?");
+						
+						clients.forEach(System.out::println);
+						System.out.println("0 - Cancelar agendamento");
+						System.out.println();
+						chooseClient = sc.nextLong();
+						sc.nextLine();
+						
+						if(chooseClient == 0L) {
+							break;
+						}else if(!clientsId.contains(chooseClient)) {
+							System.out.println("Opção incorreta!");
+							System.out.println("Passe uma opção válida!");
+							System.out.println();
+						}else {
+							break;
+						}
+					}
+					
+					
+					if(chooseClient == null) {
+						break;
+					}
+					
+					em.getTransaction().begin();
+					
+					Client client = em.find(Client.class, chooseClient);
+					
+					em.getTransaction().commit();
+					
+					//////
+					
+					List<Animal> animals = client.getAnimals();
+					List<Long> animalsId = animals.stream().map(a -> a.getId()).collect(Collectors.toList());
+					
+					if(animals.isEmpty()) {
+						System.out.println("Não tem animais atualmente.");
+						break;
+					}
+					
+					while(true) {
+						System.out.println();
+						System.out.println("Qual animal vai ser selecionado pra agendar a consulta?");
+						System.out.println();
+						System.out.println();
+						
+						animals.forEach(System.out::println);
+						System.out.println("0 - Cancelar agendamento");
+						System.out.println();
+						
+						chooseAnimal = sc.nextLong();
+						sc.nextLine();
+						
+						if(chooseAnimal == 0L) {
+							break;
+						}else if(!animalsId.contains(chooseAnimal)) {
+							System.out.println("Opção incorreta!");
+							System.out.println("Passe uma opção válida!");
+							System.out.println();
+						}else {
+							break;
+						}
+					}
+					
+					if(chooseAnimal == null) {
+						break;
+					}
+					
+					em.getTransaction().begin();
+					
+					Animal animal = em.find(Animal.class, chooseAnimal);
+					
+					em.getTransaction().commit();
+					
+					
+					/////
+					
+					while(true) {
+						System.out.println("Quem vai ser o veterinário ?");
+						
+						veterinarians.forEach(System.out::println);
+						System.out.println("0 - Cancelar agendamento");
+						System.out.println();
+						chooseVeterinarian = sc.nextLong();
+						sc.nextLine();
+						
+						if(chooseVeterinarian == 0L) {
+							break;
+						}else if(!veterinariansId.contains(chooseVeterinarian)) {
+							System.out.println("Opção incorreta!");
+							System.out.println("Passe uma opção válida!");
+							System.out.println();
+						}else {
+							break;
+						}
+					}
+					
+					if(chooseVeterinarian == null) {
+						break;
+					}
+					
+					em.getTransaction().begin();
+					
+					Veterinarian veterinarian = em.find(Veterinarian.class, chooseVeterinarian);
+					
+					em.getTransaction().commit();
+					
+					/////
+					
+					//// FALTA A DATA
+					
+					
+					
+					break;
+					
+				}
 					
 				case 0:
 					System.out.println("Saiu do Gerenciamento...");
