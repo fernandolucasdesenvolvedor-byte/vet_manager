@@ -1,3 +1,5 @@
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -9,6 +11,7 @@ import javax.persistence.Persistence;
 import entities.Address;
 import entities.Animal;
 import entities.Client;
+import entities.Consultation;
 import entities.Receptionist;
 import entities.Specialty;
 import entities.Veterinarian;
@@ -308,6 +311,7 @@ public class Program {
 					
 				case 6:{
 					System.out.println();
+					DateTimeFormatter fm = DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm");
 					
 					em.getTransaction().begin();
 					
@@ -319,6 +323,7 @@ public class Program {
 					Long chooseClient = null;
 					Long chooseAnimal = null;
 					Long chooseVeterinarian = null;
+					LocalDateTime dateTime;
 					
 					em.getTransaction().commit();
 					
@@ -443,12 +448,36 @@ public class Program {
 					
 					/////
 					
-					//// FALTA A DATA
+					while(true) {
+						System.out.println();
+						System.out.println("Qual data do agendamento? (??/??/????)");
+						String date = sc.nextLine();
+						System.out.println();
+						System.out.println("Qual horário do agendamento? (??:??)");
+						String time = sc.nextLine();
+						dateTime = LocalDateTime.parse(date+" - "+time, fm);
+						
+						if(dateTime.isBefore(LocalDateTime.now())) {
+							System.out.println("Data inválida!");
+						}else {
+							break;
+						}
+					}
 					
+					/////
 					
+					System.out.println();
+					dateTime = dateTime.minusHours(3);
+					System.out.println(dateTime);
+					Consultation consultation = new Consultation(client,animal,veterinarian,dateTime);
+					
+					em.getTransaction().begin();
+					
+					em.persist(consultation);
+					
+					em.getTransaction().commit();
 					
 					break;
-					
 				}
 					
 				case 0:
