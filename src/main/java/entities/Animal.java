@@ -1,11 +1,15 @@
 package entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -21,6 +25,9 @@ public class Animal {
 	@ManyToOne
 	@JoinColumn(nullable = false)
 	private Client owner;
+	
+	@OneToMany(mappedBy = "animal")
+	private List<MedicalRecord> medicalRecords = new ArrayList<>();
 	
 	public Animal() {}
 	
@@ -53,6 +60,10 @@ public class Animal {
 		this.owner = owner;
 	}
 	
+	public List<MedicalRecord> getMedicalRecords() {
+		return medicalRecords;
+	}
+
 	@Override
 	public String toString() {
 		return id+" - "+name;

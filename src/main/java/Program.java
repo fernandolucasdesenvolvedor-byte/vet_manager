@@ -38,6 +38,8 @@ public class Program {
 			System.out.println("4 - Cadastrar especialidade.");
 			System.out.println("5 - Vincular especialidade ao veterinário.");
 			System.out.println("6 - Agendar consulta.");
+			System.out.println("7 - Registrar atendimento veterinário.");
+			System.out.println("8 - Consultar prontuário de um animal.");
 			System.out.println("0 - Sair.");
 			System.out.println("");
 			
@@ -476,6 +478,52 @@ public class Program {
 					em.persist(consultation);
 					
 					em.getTransaction().commit();
+					
+					break;
+				}
+				
+				case 7:{
+					System.out.println("Funcionalidade ainda não implementada!");
+					break;
+				}
+				
+				case 8:{
+					System.out.println();
+					em.getTransaction().begin();
+					
+					List<Animal> animals = em.createQuery("SELECT a FROM Animal a WHERE EXISTS (SELECT 1 FROM MedicalRecord m WHERE a.id = m.animal.id)", Animal.class).getResultList();
+					List<Long> animalsId = animals.stream().map(a -> a.getId()).collect(Collectors.toList());
+					
+					em.getTransaction().commit();
+					
+					while(true) {
+						System.out.println("Qual animal você quer ver os prontuários?");
+						animals.forEach(System.out::println);
+						System.out.println("0 - Sair");
+						
+						Long chooseId = sc.nextLong();
+						System.out.println();
+						
+						
+						if(chooseId == 0) {
+							break;
+						}else if(!animalsId.contains(chooseId)) {
+							System.out.println("Selecione um animal disponível.");
+						}else {
+							System.out.println();
+							
+							em.getTransaction().begin();
+							
+							Animal animal = em.find(Animal.class, chooseId);
+							animal.getMedicalRecords().forEach(m -> {
+								System.out.println(m);
+							});
+							
+							em.getTransaction().commit();
+							
+							break;
+						}
+					}
 					
 					break;
 				}
