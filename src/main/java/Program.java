@@ -38,9 +38,10 @@ public class Program {
 			System.out.println("4 - Cadastrar especialidade.");
 			System.out.println("5 - Vincular especialidade ao veterinário.");
 			System.out.println("6 - Agendar consulta.");
-			System.out.println("7 - Registrar atendimento veterinário.");
+			System.out.println("7 - Registrar atendimento veterinário.");//*********** AINDA NÃO IMPLEMENTEI
 			System.out.println("8 - Consultar prontuário de um animal.");
 			System.out.println("9 - Listar consultas de um veterinário.");
+			System.out.println("10 - Listar animais de um cliente.");
 			System.out.println("0 - Sair.");
 			System.out.println("");
 			
@@ -53,11 +54,17 @@ public class Program {
 				case 1:{
 					System.out.println();
 					System.out.println("Qual nome do cliente?");
+					System.out.println();
 					String nameClient = sc.nextLine();
+					System.out.println();
 					System.out.println("Qual nome da rua?");
+					System.out.println();
 					String streetClient = sc.nextLine();
+					System.out.println();
 					System.out.println("Qual número da rua?");
+					System.out.println();
 					String numberStreetClient = sc.nextLine();
+					System.out.println();
 					
 					Address addressClient = new Address(streetClient,numberStreetClient);
 					Client client = new Client(nameClient,addressClient);
@@ -76,6 +83,7 @@ public class Program {
 				case 2:{
 					System.out.println();
 					System.out.println("Qual nome do animal?");
+					System.out.println();
 					String nameAnimal = sc.nextLine();
 					
 					em.getTransaction().begin();;
@@ -100,6 +108,7 @@ public class Program {
 							Client owner = em.find(Client.class, chooseOwner);
 							Animal animal = new Animal(nameAnimal, owner);
 							em.persist(animal);
+							System.out.println();
 							System.out.println("Animal registrado com sucesso!");
 							owner.getAnimals().add(animal);
 							em.merge(owner);
@@ -107,9 +116,9 @@ public class Program {
 						}else if(chooseOwner == 0){
 							break;
 						}else {
+							System.out.println();
 							System.out.println("Não existe esse cliente.");
 							System.out.println("Escolha um cliente disponível.");
-							System.out.println("");
 						}
 					}
 					
@@ -122,11 +131,17 @@ public class Program {
 				case 3:{
 					System.out.println();
 					System.out.println("Qual nome do funcionário?");
+					System.out.println();
 					String nameEmployee = sc.nextLine();
+					System.out.println();
 					System.out.println("Qual nome da rua?");
+					System.out.println();
 					String streetEmployee = sc.nextLine();
+					System.out.println();
 					System.out.println("Qual número da rua?");
+					System.out.println();
 					String numberStreetEmployee = sc.nextLine();
+					System.out.println();
 					
 					Address addressEmployee = new Address(streetEmployee,numberStreetEmployee);
 					
@@ -134,11 +149,11 @@ public class Program {
 					while(true) {
 						
 						System.out.println("Que tipo de funcionário?");
-						System.out.println("");
+						System.out.println();
 						System.out.println("1 - Veterinário");
 						System.out.println("2 - Recepcionista");
 						System.out.println("0 - Cancelar cadastro de funcionário");
-						System.out.println("");
+						System.out.println();
 						
 						int chooseWorker = sc.nextInt();
 						sc.nextLine();
@@ -147,27 +162,37 @@ public class Program {
 							case 1: {
 								System.out.println("");
 								System.out.println("Qual salário do funcionário?");
+								System.out.println();
 								Double salaryEmployee = sc.nextDouble();
+								System.out.println();
 								Veterinarian veterinarian = new Veterinarian(nameEmployee, salaryEmployee, addressEmployee);
 								em.getTransaction().begin();
 								em.persist(veterinarian);
 								em.getTransaction().commit();
+								System.out.println("Veterinário Cadastrado!");
+								System.out.println();
 								break;
 							}
 							case 2: {
 								System.out.println("");
 								System.out.println("Qual salário do funcionário?");
+								System.out.println();
 								Double salaryEmployee = sc.nextDouble();
+								System.out.println();
 								Receptionist receptionist = new Receptionist(nameEmployee, salaryEmployee, addressEmployee);
 								em.getTransaction().begin();
 								em.persist(receptionist);
 								em.getTransaction().commit();
+								System.out.println("Recepcionista Cadastrado!");
+								System.out.println();
 								break;
 							}
 							case 0:
 								break;
 							default:
+								System.out.println();
 								System.out.println("Opção Incorreta!");
+								System.out.println();
 								break;
 						}
 						
@@ -185,7 +210,9 @@ public class Program {
 				case 4:{
 					System.out.println();
 					System.out.println("Qual nome da especialidade?");
+					System.out.println();
 					String nameSpecialty = sc.nextLine();
+					System.out.println();
 					
 					em.getTransaction().begin();
 					
@@ -197,8 +224,8 @@ public class Program {
 						System.out.println("Especialidade cadastrada!");
 						System.out.println();
 					}else {
-						System.out.println();
 						System.out.println("Já Existe essa especialidade!");
+						System.out.println();
 					}
 					
 					em.getTransaction().commit();
@@ -221,9 +248,11 @@ public class Program {
 					
 					if(specialtys.isEmpty()) {
 						System.out.println("Não tem especialidades atualmente.");
+						System.out.println();
 						break;
 					}else if(veterinarians.isEmpty()) {
 						System.out.println("Não tem veterinários atualmente.");
+						System.out.println();
 						break;
 					}
 					
@@ -233,11 +262,12 @@ public class Program {
 						System.out.println();
 						specialtys.forEach(System.out::println);
 						System.out.println("0 - Cancelar a vinculação.");
+						System.out.println();
 						
 						Long chooseSpecialty = sc.nextLong();
+						System.out.println();
 						
 						if(chooseSpecialty == 0L){
-							System.out.println();
 							break;
 						}else if(!specialtysIds.contains(chooseSpecialty)) {
 							System.out.println("Opção incorreta!");
@@ -249,7 +279,6 @@ public class Program {
 							specialty = em.find(Specialty.class, chooseSpecialty);
 							
 							em.getTransaction().commit();
-							System.out.println();
 							break;
 						}
 					}
@@ -275,11 +304,12 @@ public class Program {
 						System.out.println();
 						veterinariansWithoutSpecialty.forEach(System.out::println);
 						System.out.println("0 - Cancelar a vinculação.");
+						System.out.println();
 						
 						Long chooseVeterinarian = sc.nextLong();
+						System.out.println();
 						
 						if(chooseVeterinarian == 0L){
-							System.out.println();
 							break;
 						}else if(!veterinariansWithoutSpecialtyIds.contains(chooseVeterinarian)) {
 							System.out.println("Opção incorreta!");
@@ -292,7 +322,6 @@ public class Program {
 							specialtyChoose.getVeterinarians().add(veterinarian);
 							
 							em.getTransaction().commit();
-							System.out.println();
 							break;
 						}
 					}
@@ -325,18 +354,20 @@ public class Program {
 					List<Veterinarian> veterinarians = em.createQuery("SELECT v FROM Veterinarian v", Veterinarian.class).getResultList();
 					List<Long> veterinariansId = veterinarians.stream().map(v -> v.getId()).collect(Collectors.toList());;
 					
-					Long chooseClient = null;
-					Long chooseAnimal = null;
-					Long chooseVeterinarian = null;
 					LocalDateTime dateTime;
+					Client client = null;
+					Animal animal = null;
+					Veterinarian veterinarian = null;
 					
 					em.getTransaction().commit();
 					
 					if(clients.isEmpty()) {
 						System.out.println("Não tem clientes atualmente.");
+						System.out.println();
 						break;
 					}else if(veterinarians.isEmpty()) {
 						System.out.println("Não tem veterinários atualmente.");
+						System.out.println();
 						break;
 					}
 					
@@ -345,34 +376,35 @@ public class Program {
 					
 					while(true) {
 						System.out.println("Qual cliente vai fazer o agendamento?");
+						System.out.println();
 						
 						clients.forEach(System.out::println);
 						System.out.println("0 - Cancelar agendamento");
 						System.out.println();
-						chooseClient = sc.nextLong();
-						sc.nextLine();
 						
-						if(chooseClient == 0L) {
+						Long chooseClient = sc.nextLong();
+						
+						if(chooseClient == 0) {
 							break;
 						}else if(!clientsId.contains(chooseClient)) {
 							System.out.println("Opção incorreta!");
 							System.out.println("Passe uma opção válida!");
 							System.out.println();
 						}else {
+							em.getTransaction().begin();
+							
+							client = em.find(Client.class,chooseClient);
+							
+							em.getTransaction().commit();
 							break;
 						}
 					}
 					
 					
-					if(chooseClient == null) {
+					if(client == null) {
+						System.out.println();
 						break;
 					}
-					
-					em.getTransaction().begin();
-					
-					Client client = em.find(Client.class, chooseClient);
-					
-					em.getTransaction().commit();
 					
 					//////
 					
@@ -381,6 +413,7 @@ public class Program {
 					
 					if(animals.isEmpty()) {
 						System.out.println("Não tem animais atualmente.");
+						System.out.println();
 						break;
 					}
 					
@@ -388,46 +421,47 @@ public class Program {
 						System.out.println();
 						System.out.println("Qual animal vai ser selecionado pra agendar a consulta?");
 						System.out.println();
-						System.out.println();
 						
 						animals.forEach(System.out::println);
 						System.out.println("0 - Cancelar agendamento");
 						System.out.println();
 						
-						chooseAnimal = sc.nextLong();
+						Long chooseAnimal = sc.nextLong();
 						sc.nextLine();
 						
-						if(chooseAnimal == 0L) {
+						if(chooseAnimal == 0) {
 							break;
 						}else if(!animalsId.contains(chooseAnimal)) {
 							System.out.println("Opção incorreta!");
 							System.out.println("Passe uma opção válida!");
 							System.out.println();
 						}else {
+							em.getTransaction().begin();
+							
+							animal = em.find(Animal.class,chooseAnimal);
+							
+							em.getTransaction().commit();
 							break;
 						}
 					}
 					
-					if(chooseAnimal == null) {
+					if(animal == null) {
+						System.out.println();
 						break;
 					}
-					
-					em.getTransaction().begin();
-					
-					Animal animal = em.find(Animal.class, chooseAnimal);
-					
-					em.getTransaction().commit();
-					
 					
 					/////
 					
 					while(true) {
+						System.out.println();
 						System.out.println("Quem vai ser o veterinário ?");
+						System.out.println();
 						
 						veterinarians.forEach(System.out::println);
 						System.out.println("0 - Cancelar agendamento");
 						System.out.println();
-						chooseVeterinarian = sc.nextLong();
+						
+						Long chooseVeterinarian = sc.nextLong();
 						sc.nextLine();
 						
 						if(chooseVeterinarian == 0L) {
@@ -437,33 +471,37 @@ public class Program {
 							System.out.println("Passe uma opção válida!");
 							System.out.println();
 						}else {
+							em.getTransaction().begin();
+							
+							veterinarian = em.find(Veterinarian.class,chooseVeterinarian);
+							
+							em.getTransaction().commit();
 							break;
 						}
 					}
 					
-					if(chooseVeterinarian == null) {
+					if(veterinarian == null) {
+						System.out.println();
 						break;
 					}
-					
-					em.getTransaction().begin();
-					
-					Veterinarian veterinarian = em.find(Veterinarian.class, chooseVeterinarian);
-					
-					em.getTransaction().commit();
 					
 					/////
 					
 					while(true) {
 						System.out.println();
 						System.out.println("Qual data do agendamento? (??/??/????)");
+						System.out.println();
 						String date = sc.nextLine();
 						System.out.println();
 						System.out.println("Qual horário do agendamento? (??:??)");
+						System.out.println();
 						String time = sc.nextLine();
 						dateTime = LocalDateTime.parse(date+" - "+time, fm);
 						
 						if(dateTime.isBefore(LocalDateTime.now())) {
+							System.out.println();
 							System.out.println("Data inválida!");
+							System.out.println("Informe uma Válida!");
 						}else {
 							break;
 						}
@@ -474,6 +512,7 @@ public class Program {
 					System.out.println();
 					dateTime = dateTime.minusHours(3);
 					System.out.println("Agendamento concluído!");
+					System.out.println();
 					Consultation consultation = new Consultation(client,animal,veterinarian,dateTime);
 					
 					em.getTransaction().begin();
@@ -501,13 +540,16 @@ public class Program {
 					em.getTransaction().commit();
 					
 					if(animals.isEmpty()) {
-						System.out.println("Não tem animais disponíveis.");
+						System.out.println("Não tem animais com prontuário disponíveis.");
+						break;
 					}
 					
 					while(true) {
 						System.out.println("Qual animal você quer ver os prontuários?");
+						System.out.println();
 						animals.forEach(System.out::println);
 						System.out.println("0 - Sair");
+						System.out.println();
 						
 						Long chooseId = sc.nextLong();
 						System.out.println();
@@ -517,8 +559,8 @@ public class Program {
 							break;
 						}else if(!animalsId.contains(chooseId)) {
 							System.out.println("Selecione um animal disponível.");
-						}else {
 							System.out.println();
+						}else {
 							
 							em.getTransaction().begin();
 							
@@ -556,8 +598,10 @@ public class Program {
 						
 						veterinarians.forEach(System.out::println);
 						System.out.println("0 - Sair");
+						System.out.println();
 						
 						Long chooseId = sc.nextLong();
+						System.out.println();
 						
 						if(chooseId == 0) {
 							break;
@@ -568,19 +612,70 @@ public class Program {
 							em.getTransaction().begin();
 							
 							Veterinarian veterinarian = em.find(Veterinarian.class, chooseId);
-							System.out.println("Consultas do(a) Veterinário: "+veterinarian.getName());
-							System.out.println();
-							veterinarian.getConsultations().forEach(c -> {
-								System.out.println(c);
-							});
 							
+							if(veterinarian.getConsultations().isEmpty()) {
+								System.out.println("O(A) Veterinário(a) "+veterinarian.getName()+" não tem consultas agendadas!");
+								System.out.println();
+							}else {
+								System.out.println("Consultas do(a) Veterinário: "+veterinarian.getName());
+								System.out.println();
+								veterinarian.getConsultations().forEach(c -> {
+									System.out.println(c);
+								});
+							}
 							em.getTransaction().commit();
+							break;
 						}
-						
-						
+					}
+					
+					
+					
+					break;
+				}
+				
+				case 10:{
+					System.out.println();
+					em.getTransaction().begin();
+					
+					List<Client> clients = em.createQuery("SELECT c FROM Client c WHERE EXISTS (SELECT a FROM Animal a WHERE c.id = a.owner.id)",Client.class).getResultList();
+					List<Long> clientsId = clients.stream().map(c -> c.getId()).collect(Collectors.toList());
+					
+					em.getTransaction().commit();
+					
+					if(clients.isEmpty()) {
+						System.out.println("Não tem clientes atualmente.");
+						System.out.println();
 						break;
 					}
 					
+					while(true) {
+						System.out.println("Listar animais de qual cliente?");
+						System.out.println();
+						clients.forEach(System.out::println);
+						System.out.println("0 - Cancelar");
+						System.out.println();
+						
+						Long chooseId = sc.nextLong();
+						System.out.println();
+						
+						if(chooseId == 0) {
+							break;
+						}else if(!clientsId.contains(chooseId)) {
+							System.out.println("Escolha um cliente disponível.");
+							System.out.println();
+						}else {
+							em.getTransaction().begin();
+							
+							Client client = em.find(Client.class, chooseId);
+							client.getAnimals().forEach(a -> {
+								System.out.println(a.getName());
+							});
+							
+							em.getTransaction().commit();
+							System.out.println();
+							break;
+						}
+					}
 					
 					
 					break;
