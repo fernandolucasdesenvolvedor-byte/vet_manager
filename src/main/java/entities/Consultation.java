@@ -1,6 +1,7 @@
 package entities;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -87,12 +88,13 @@ public class Consultation {
 	
 	@Override
 	public String toString() {
+		DateTimeFormatter fm = DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm");
+		
 		StringBuilder sb = new StringBuilder();
 		sb.append("Cliente: "+client.getName()+"\n");
 		sb.append("Animal: "+animal.getName()+"\n");
 		sb.append("Veterinário: "+veterinarian.getName()+"\n");
-		sb.append("Data: "+client.getName()+"\n");
-		sb.append("Horário: "+client.getName()+"\n");
+		sb.append("Data: "+date.format(fm)+"\n");
 		return sb.toString();
 	}
 

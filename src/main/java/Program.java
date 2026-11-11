@@ -40,6 +40,7 @@ public class Program {
 			System.out.println("6 - Agendar consulta.");
 			System.out.println("7 - Registrar atendimento veterinário.");
 			System.out.println("8 - Consultar prontuário de um animal.");
+			System.out.println("9 - Listar consultas de um veterinário.");
 			System.out.println("0 - Sair.");
 			System.out.println("");
 			
@@ -100,6 +101,8 @@ public class Program {
 							Animal animal = new Animal(nameAnimal, owner);
 							em.persist(animal);
 							System.out.println("Animal registrado com sucesso!");
+							owner.getAnimals().add(animal);
+							em.merge(owner);
 							break;
 						}else if(chooseOwner == 0){
 							break;
@@ -470,12 +473,13 @@ public class Program {
 					
 					System.out.println();
 					dateTime = dateTime.minusHours(3);
-					System.out.println(dateTime);
+					System.out.println("Agendamento concluído!");
 					Consultation consultation = new Consultation(client,animal,veterinarian,dateTime);
 					
 					em.getTransaction().begin();
 					
 					em.persist(consultation);
+					veterinarian.getConsultations().add(consultation);
 					
 					em.getTransaction().commit();
 					
@@ -495,6 +499,10 @@ public class Program {
 					List<Long> animalsId = animals.stream().map(a -> a.getId()).collect(Collectors.toList());
 					
 					em.getTransaction().commit();
+					
+					if(animals.isEmpty()) {
+						System.out.println("Não tem animais disponíveis.");
+					}
 					
 					while(true) {
 						System.out.println("Qual animal você quer ver os prontuários?");
@@ -524,6 +532,56 @@ public class Program {
 							break;
 						}
 					}
+					
+					break;
+				}
+				
+				case 9:{
+					System.out.println();
+					em.getTransaction().begin();
+					
+					List<Veterinarian> veterinarians = em.createQuery("SELECT v FROM Veterinarian v", Veterinarian.class).getResultList();
+					List<Long> veterinariansId = veterinarians.stream().map(v -> v.getId()).collect(Collectors.toList());
+					
+					em.getTransaction().commit();
+					
+					if(veterinarians.isEmpty()) {
+						System.out.println("Não tem veterinários atualmente.");
+						break;
+					}
+					
+					while(true) {
+						System.out.println("Ver as consultas de qual veterinário?");
+						System.out.println();
+						
+						veterinarians.forEach(System.out::println);
+						System.out.println("0 - Sair");
+						
+						Long chooseId = sc.nextLong();
+						
+						if(chooseId == 0) {
+							break;
+						}else if(!veterinariansId.contains(chooseId)) {
+							System.out.println("Escolha um veterinário disponível.");
+							System.out.println();
+						}else {
+							em.getTransaction().begin();
+							
+							Veterinarian veterinarian = em.find(Veterinarian.class, chooseId);
+							System.out.println("Consultas do(a) Veterinário: "+veterinarian.getName());
+							System.out.println();
+							veterinarian.getConsultations().forEach(c -> {
+								System.out.println(c);
+							});
+							
+							em.getTransaction().commit();
+						}
+						
+						
+						break;
+					}
+					
+					
 					
 					break;
 				}
