@@ -14,5 +14,15 @@
 		</query>
 
 	</named-query>
+	
+	<named-query name="Animal.findByName">
+
+		<query>
+
+			SELECT a FROM Animal a WHERE a.name LIKE CONCAT('%',:name, '%')
+
+		</query>
+
+	</named-query>
 
 </entity-mappings>

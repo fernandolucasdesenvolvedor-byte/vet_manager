@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 
 import entities.Address;
 import entities.Animal;
@@ -42,6 +43,7 @@ public class Program {
 			System.out.println("8 - Consultar prontuário de um animal.");
 			System.out.println("9 - Listar consultas de um veterinário.");
 			System.out.println("10 - Listar animais de um cliente.");
+			System.out.println("11 - Pesquisar animais por nome.");
 			System.out.println("0 - Sair.");
 			System.out.println("");
 			
@@ -680,13 +682,40 @@ public class Program {
 					
 					break;
 				}
+				
+				case 11:{
+					System.out.println();
+					System.out.println("Qual o nome do animal?");
+					System.out.println();
+					String animalName = sc.nextLine();
+					System.out.println();
+					
+					em.getTransaction().begin();
+					TypedQuery<Animal> query = em.createNamedQuery("Animal.findByName", Animal.class);
+					query.setParameter("name", animalName);
+					List<Animal> animals = query.getResultList();
+					em.getTransaction().commit();
+					
+					if(animals.isEmpty()) {
+						System.out.println("Sem animais com esse nome.");
+						System.out.println();
+					}else {
+						animals.forEach(System.out::println);
+						System.out.println();
+					}
+					
+					break;
+				}
 					
 				case 0:
+					System.out.println();
 					System.out.println("Saiu do Gerenciamento...");
 					break;
 					
 				default:
+					System.out.println();
 					System.out.println("Comando Incorreto...");
+					System.out.println();
 					break;
 			
 			}
