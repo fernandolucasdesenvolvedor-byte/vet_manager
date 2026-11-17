@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -44,6 +45,7 @@ public class Program {
 			System.out.println("9 - Listar consultas de um veterinário.");
 			System.out.println("10 - Listar animais de um cliente.");
 			System.out.println("11 - Pesquisar animais por nome.");
+			System.out.println("12 - Listar consultas pro período.");
 			System.out.println("0 - Sair.");
 			System.out.println("");
 			
@@ -703,6 +705,47 @@ public class Program {
 						animals.forEach(System.out::println);
 						System.out.println();
 					}
+					
+					break;
+				}
+				
+				case 12:{
+					System.out.println();
+					
+					DateTimeFormatter fm = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+					
+					em.getTransaction().begin();
+					
+					List<Consultation> consultations = em.createQuery("SELECT c FROM Consultation c", Consultation.class).getResultList();
+					
+					em.getTransaction().commit();
+					
+					if(consultations.isEmpty()) {
+						System.out.println("Não tem nenhuma consulta registrada!");
+						break;
+					}
+					
+					while(true) {
+						System.out.println("Listar as consultas de qual data? (00/00/0000)");
+						System.out.println();
+						String dateFormat = sc.nextLine();
+						System.out.println();
+						
+						LocalDateTime date = LocalDate.parse(dateFormat, fm).atStartOfDay();
+						
+						List<Consultation> consultationsOfDay = consultations.stream().filter(c -> c.getDate().getDayOfYear() == date.getDayOfYear()).collect(Collectors.toList());
+						
+						if(consultationsOfDay.isEmpty()) {
+							System.out.println("Não tem consultas nessa data.");
+							System.out.println();
+						}else {
+							consultations.forEach(System.out::println);
+							System.out.println();
+						}
+						
+						break;
+					}
+					
 					
 					break;
 				}
