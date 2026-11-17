@@ -46,6 +46,7 @@ public class Program {
 			System.out.println("10 - Listar animais de um cliente.");
 			System.out.println("11 - Pesquisar animais por nome.");
 			System.out.println("12 - Listar consultas pro período.");
+			System.out.println("13 - Excluir ou atualizar registros.");//*********** AINDA NÃO IMPLEMENTEI
 			System.out.println("0 - Sair.");
 			System.out.println("");
 			
@@ -61,6 +62,18 @@ public class Program {
 					System.out.println();
 					String nameClient = sc.nextLine();
 					System.out.println();
+					System.out.println("Qual cpf?");
+					System.out.println();
+					String cpfClient = sc.nextLine();
+					System.out.println();
+					System.out.println("Qual número do telefone?");
+					System.out.println();
+					String numberPhoneClient = sc.nextLine();
+					System.out.println();
+					System.out.println("Qual email?");
+					System.out.println();
+					String emailClient = sc.nextLine();
+					System.out.println();
 					System.out.println("Qual nome da rua?");
 					System.out.println();
 					String streetClient = sc.nextLine();
@@ -70,8 +83,19 @@ public class Program {
 					String numberStreetClient = sc.nextLine();
 					System.out.println();
 					
+					em.getTransaction().begin();
+					
+					List<Client> clients = em.createQuery("SELECT c FROM Client c",Client.class).getResultList().stream().filter(c -> c.getCpf().compareTo(cpfClient) == 0).collect(Collectors.toList());
+					
+					em.getTransaction().commit();
+					
+					if(!clients.isEmpty()) {
+						System.out.println("Já existe esse cadastro.");
+						break;
+					}
+					
 					Address addressClient = new Address(streetClient,numberStreetClient);
-					Client client = new Client(nameClient,addressClient);
+					Client client = new Client(nameClient,cpfClient,numberPhoneClient,emailClient,addressClient);
 					
 					em.getTransaction().begin();;
 					
@@ -86,13 +110,46 @@ public class Program {
 					
 				case 2:{
 					System.out.println();
+					
+					em.getTransaction().begin();
+					
+					List<Client> clients = em.createNamedQuery("Client.findAll", Client.class).getResultList();
+					
+					em.getTransaction().commit();
+					
+					if(clients.isEmpty()) {
+						System.out.println("Não tem clientes atualmente.");
+						System.out.println();
+						break;
+					}
+					
 					System.out.println("Qual nome do animal?");
 					System.out.println();
 					String nameAnimal = sc.nextLine();
+					System.out.println();
+					System.out.println("Qual a espécie?");
+					System.out.println();
+					String speciesAnimal = sc.nextLine();
+					System.out.println();
+					System.out.println("Qual a raça?");
+					System.out.println();
+					String breedAnimal = sc.nextLine();
+					System.out.println();
+					System.out.println("Qual gênero do animal?");
+					System.out.println();
+					String genderAnimal = sc.nextLine();
+					System.out.println();
+					System.out.println("Qual peso do animal?");
+					System.out.println();
+					String weightAnimal = sc.nextLine();
+					System.out.println();
+					System.out.println("Qual data de nascimento do animal? (??/??/????)");
+					System.out.println();
+					String dateOfBirthAnimalString = sc.nextLine();
+					
+					LocalDateTime dateOfBirthAnimal = LocalDate.parse(dateOfBirthAnimalString, DateTimeFormatter.ofPattern("dd/MM/yyyy")).atStartOfDay();
 					
 					em.getTransaction().begin();;
-					
-					List<Client> clients = em.createNamedQuery("Client.findAll", Client.class).getResultList();
 					
 					while(true) {
 						
@@ -110,7 +167,7 @@ public class Program {
 						
 						if(em.contains(em.find(Client.class, chooseOwner))) {
 							Client owner = em.find(Client.class, chooseOwner);
-							Animal animal = new Animal(nameAnimal, owner);
+							Animal animal = new Animal(nameAnimal, speciesAnimal, breedAnimal, genderAnimal, weightAnimal, dateOfBirthAnimal, owner);
 							em.persist(animal);
 							System.out.println();
 							System.out.println("Animal registrado com sucesso!");
@@ -747,6 +804,12 @@ public class Program {
 					}
 					
 					
+					break;
+				}
+				
+				case 13:{
+					System.out.println();
+					System.out.println("Funcionalidade ainda não implementada!");
 					break;
 				}
 					

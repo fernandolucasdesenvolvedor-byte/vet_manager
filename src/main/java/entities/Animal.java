@@ -1,5 +1,6 @@
 package entities;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +22,11 @@ public class Animal {
 	private Long id;
 	
 	private String name;
+	private String species;
+	private String breed;
+	private String gender;
+	private String weight;
+	private LocalDateTime dateofbirth;
 	
 	@ManyToOne
 	@JoinColumn(nullable = false)
@@ -31,8 +37,13 @@ public class Animal {
 	
 	public Animal() {}
 	
-	public Animal(String name, Client owner) {
+	public Animal(String name, String species, String breed, String gender, String weight, LocalDateTime dateOfBirth, Client owner) {
 		this.name = name;
+		this.species = species;
+		this.breed = breed;
+		this.gender = gender;
+		this.weight = weight;
+		this.dateofbirth = dateOfBirth;
 		this.owner = owner;
 	}
 
@@ -60,6 +71,46 @@ public class Animal {
 		this.owner = owner;
 	}
 	
+	public String getSpecies() {
+		return species;
+	}
+
+	public void setSpecies(String species) {
+		this.species = species;
+	}
+
+	public String getBreed() {
+		return breed;
+	}
+
+	public void setBreed(String breed) {
+		this.breed = breed;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public String getWeight() {
+		return weight;
+	}
+
+	public void setWeight(String weight) {
+		this.weight = weight;
+	}
+
+	public LocalDateTime getDateofbirth() {
+		return dateofbirth;
+	}
+
+	public void setDateofbirth(LocalDateTime dateofbirth) {
+		this.dateofbirth = dateofbirth;
+	}
+
 	public List<MedicalRecord> getMedicalRecords() {
 		return medicalRecords;
 	}

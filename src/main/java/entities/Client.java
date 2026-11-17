@@ -3,6 +3,7 @@ package entities;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,6 +21,12 @@ public class Client {
 	private Long id;
 	private String name;
 	
+	@Column(unique = true)
+	private String cpf;
+	
+	private String phone;
+	private String email;
+	
 	@Embedded
 	private Address address;
 	
@@ -28,8 +35,11 @@ public class Client {
 	
 	public Client() {}
 	
-	public Client(String name, Address address) {
+	public Client(String name, String cpf, String phone, String email, Address address) {
 		this.name = name;
+		this.cpf = cpf;
+		this.phone = phone;
+		this.email = email;
 		this.address = address;
 	}
 
@@ -53,12 +63,36 @@ public class Client {
 		return id;
 	}
 
+	public String getCpf() {
+		return cpf;
+	}
+
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	public List<Animal> getAnimals() {
 		return animals;
 	}
 
 	@Override
 	public String toString() {
-		return id+" - "+name;
+		return id+" - "+name+" | CPF: "+cpf+" | Telefone: "+phone+" | Email: "+email;
 	}
 }
