@@ -18,6 +18,7 @@ public class Specialty{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String specialty;
+	private String description;
 	
 	@ManyToMany(mappedBy = "specialtys")
 	private Set<Veterinarian> veterinarians = new HashSet<>();
@@ -26,8 +27,9 @@ public class Specialty{
 		
 	}
 	
-	public Specialty(String specialty) {
+	public Specialty(String specialty, String description) {
 		this.specialty = specialty;
+		this.description = description;
 	}
 
 	public Long getId() {
@@ -46,6 +48,14 @@ public class Specialty{
 		this.specialty = specialty;
 	}
 	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	public Set<Veterinarian> getVeterinarians() {
 		return veterinarians;
 	}

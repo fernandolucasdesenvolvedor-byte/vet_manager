@@ -306,6 +306,10 @@ public class Program {
 					System.out.println();
 					String nameSpecialty = sc.nextLine();
 					System.out.println();
+					System.out.println("Qual a descrição da especialidade?");
+					System.out.println();
+					String descriptionSpecialty = sc.nextLine();
+					System.out.println();
 					
 					em.getTransaction().begin();
 					
@@ -313,7 +317,7 @@ public class Program {
 					
 					
 					if(!specialtys.stream().anyMatch(s -> s.getSpecialty().equals(nameSpecialty))) {
-						em.persist(new Specialty(nameSpecialty));
+						em.persist(new Specialty(nameSpecialty,descriptionSpecialty));
 						System.out.println("Especialidade cadastrada!");
 						System.out.println();
 					}else {
