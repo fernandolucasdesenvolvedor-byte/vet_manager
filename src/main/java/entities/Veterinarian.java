@@ -1,5 +1,6 @@
 package entities;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -18,6 +19,9 @@ import javax.persistence.Table;
 @DiscriminatorValue(value = "VETERINARIAN")
 public class Veterinarian extends Employee{
 
+	
+	private String Crmv;
+	
 	@ManyToMany
 	@JoinTable(name = "veterinarian_specialty", joinColumns = @JoinColumn(name = "veterianarian_id"), inverseJoinColumns = @JoinColumn(name = "specialty_id"))
 	private Set<Specialty> specialtys = new HashSet<>();
@@ -29,8 +33,17 @@ public class Veterinarian extends Employee{
 		
 	}
 	
-	public Veterinarian(String name, Double salary, Address address) {
-		super(name,salary,address);
+	public Veterinarian(String name, String cpf, String telephone, Double salary, LocalDate dateOfHire, Address address, String Crmv) {
+		super(name,cpf,telephone,salary,dateOfHire,address);
+		this.Crmv = Crmv;
+	}
+
+	public String getCrmv() {
+		return Crmv;
+	}
+
+	public void setCrmv(String crmv) {
+		Crmv = crmv;
 	}
 
 	public Set<Specialty> getSpecialtys() {

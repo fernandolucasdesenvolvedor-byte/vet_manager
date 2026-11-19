@@ -14,6 +14,7 @@ import entities.Address;
 import entities.Animal;
 import entities.Client;
 import entities.Consultation;
+import entities.Employee;
 import entities.Receptionist;
 import entities.Specialty;
 import entities.Veterinarian;
@@ -90,7 +91,7 @@ public class Program {
 					em.getTransaction().commit();
 					
 					if(!clients.isEmpty()) {
-						System.out.println("Já existe esse cadastro.");
+						System.out.println("Esse CPF já está cadastro.");
 						break;
 					}
 					
@@ -195,6 +196,23 @@ public class Program {
 					System.out.println();
 					String nameEmployee = sc.nextLine();
 					System.out.println();
+					System.out.println("Qual cpf do funcionário?");
+					System.out.println();
+					String cpfEmployee = sc.nextLine();
+					System.out.println();
+					System.out.println("Qual telefone do funcionário?");
+					System.out.println();
+					String phoneEmployee = sc.nextLine();
+					System.out.println();
+					System.out.println("Qual salário do funcionário?");
+					System.out.println();
+					Double salaryEmployee = sc.nextDouble();
+					sc.nextLine();
+					System.out.println();
+					System.out.println("Qual data de contratação do funcionário? (??/??/????)");
+					System.out.println();
+					String dateOfHireSc = sc.nextLine();
+					System.out.println();
 					System.out.println("Qual nome da rua?");
 					System.out.println();
 					String streetEmployee = sc.nextLine();
@@ -204,7 +222,22 @@ public class Program {
 					String numberStreetEmployee = sc.nextLine();
 					System.out.println();
 					
+					em.getTransaction().begin();
+					
+					List<Employee> employees = em.createQuery("SELECT e FROM Employee e",Employee.class).getResultList().stream().filter(c -> c.getCpf().compareTo(cpfEmployee) == 0).collect(Collectors.toList());
+					
+					em.getTransaction().commit();
+					
+					if(!employees.isEmpty()) {
+						System.out.println("Esse CPF já está cadastro.");
+						break;
+					}
+					
 					Address addressEmployee = new Address(streetEmployee,numberStreetEmployee);
+					
+					DateTimeFormatter fm = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+					
+					LocalDate dateOfHireEmployee = LocalDate.parse(dateOfHireSc, fm);
 					
 					
 					while(true) {
@@ -221,12 +254,12 @@ public class Program {
 						
 						switch(chooseWorker) {
 							case 1: {
-								System.out.println("");
-								System.out.println("Qual salário do funcionário?");
 								System.out.println();
-								Double salaryEmployee = sc.nextDouble();
+								System.out.println("Qual CRMV do veterinário?");
 								System.out.println();
-								Veterinarian veterinarian = new Veterinarian(nameEmployee, salaryEmployee, addressEmployee);
+								String crmvEmployee = sc.nextLine();
+								System.out.println();
+								Veterinarian veterinarian = new Veterinarian(nameEmployee, cpfEmployee, phoneEmployee, salaryEmployee, dateOfHireEmployee, addressEmployee, crmvEmployee);
 								em.getTransaction().begin();
 								em.persist(veterinarian);
 								em.getTransaction().commit();
@@ -235,12 +268,11 @@ public class Program {
 								break;
 							}
 							case 2: {
-								System.out.println("");
-								System.out.println("Qual salário do funcionário?");
 								System.out.println();
-								Double salaryEmployee = sc.nextDouble();
+								System.out.println("Qual turno do recepcionista?");
 								System.out.println();
-								Receptionist receptionist = new Receptionist(nameEmployee, salaryEmployee, addressEmployee);
+								String workShiftEmployee = sc.nextLine();
+								Receptionist receptionist = new Receptionist(nameEmployee, cpfEmployee, phoneEmployee, salaryEmployee, dateOfHireEmployee, addressEmployee, workShiftEmployee);
 								em.getTransaction().begin();
 								em.persist(receptionist);
 								em.getTransaction().commit();
