@@ -451,7 +451,7 @@ public class Program {
 					List<Veterinarian> veterinarians = em.createQuery("SELECT v FROM Veterinarian v", Veterinarian.class).getResultList();
 					List<Long> veterinariansId = veterinarians.stream().map(v -> v.getId()).collect(Collectors.toList());;
 					
-					LocalDateTime dateTime;
+					LocalDateTime dateTime = null;
 					Client client = null;
 					Animal animal = null;
 					Veterinarian veterinarian = null;
@@ -568,6 +568,7 @@ public class Program {
 							System.out.println("Passe uma opção válida!");
 							System.out.println();
 						}else {
+							
 							em.getTransaction().begin();
 							
 							veterinarian = em.find(Veterinarian.class,chooseVeterinarian);
@@ -608,6 +609,13 @@ public class Program {
 					
 					System.out.println();
 					dateTime = dateTime.minusHours(3);
+					LocalDateTime dateTime2 = dateTime;
+					
+					if(veterinarian.getConsultations().stream().anyMatch(c -> c.getDate().compareTo(dateTime2) == 0)) {
+						System.out.println("O/A Veterinário já tem consulta nesse horário.");
+						break;
+					}
+					
 					System.out.println("Agendamento concluído!");
 					System.out.println();
 					Consultation consultation = new Consultation(client,animal,veterinarian,dateTime);
